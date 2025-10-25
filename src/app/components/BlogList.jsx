@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { blog_data } from '../../../assets/assets'
 import BlogItem from './BlogItem'
+import { blog_data } from '@/assets/assets';
 
 const BlogList = () => {
   const [menu, setMenu] = useState('All');

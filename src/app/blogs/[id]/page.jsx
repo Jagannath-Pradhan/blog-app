@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, use, useEffect } from 'react';
-import { assets, blog_data } from '../../../../assets/assets';
 import Image from 'next/image';
 import Footer from '@/app/components/Footer';
 import Link from 'next/link';
+import { assets, blog_data } from '@/assets/assets';
 
 const Page = ({ params }) => {
   const resolvedParams = use(params);

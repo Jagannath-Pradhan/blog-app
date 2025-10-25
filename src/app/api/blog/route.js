@@ -1,0 +1,43 @@
+import connectDB from "@/lib/config/db"
+import { NextResponse } from "next/server"
+import { writeFile } from "fs/promises"
+import Blog from "@/lib/models/blog"
+
+const loadDB = async () => {
+    await connectDB()
+}
+loadDB()
+
+
+export async function GET() {
+    return NextResponse.json({ message: 'Blog API is working' })
+}
+
+export async function POST(request) {
+    const formData = await request.formData()
+    const timestamp = Date.now()
+
+    const image = formData.get('image')
+    const imageByteData = await image.arrayBuffer()
+    const buffer = Buffer.from(imageByteData)
+    const path = `./public/blog_images/${timestamp}_${image.name}`
+    await writeFile(path, buffer)
+    const imageUrl = `/blog_images/${timestamp}_${image.name}`
+
+    const blogData = {
+        title: `${formData.get('title')}`,
+        description: `${formData.get('description')}`,
+        category: `${formData.get('category')}`,
+        author: `${formData.get('author')}`,
+        image: `${imageUrl}`,
+        authorImg: `${formData.get('authorImg')}`,
+    }
+
+    await Blog.create(blogData)
+    console.log('Blog saved to database');
+
+    return NextResponse.json({
+        success: true,
+        message: 'Blog created successfully'
+    }, { status: 201 })
+}
