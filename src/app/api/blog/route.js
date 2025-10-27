@@ -8,6 +8,36 @@ const loadDB = async () => {
 }
 loadDB()
 
+
+// api endpoint to get blogs
+export async function GET(request) {
+    const blogId = request.nextUrl.searchParams.get('id')
+
+    if (blogId) {
+        const blog = await Blog.findById(blogId)
+        if (!blog) {
+            return NextResponse.json({
+                success: false,
+                message: 'Blog not found.'
+            }, { status: 404 })
+        }
+        return NextResponse.json({
+            success: true,
+            message: 'blog fetched successfully.',
+            blog
+        }, { status: 200 })
+    } else {
+        const blogs = await Blog.find({})
+        return NextResponse.json({
+            success: true,
+            count: blogs.length,
+            message: 'all blogs fetched successfully.',
+            blogs
+        }, { status: 200 })
+    }
+
+}
+
 // api endpoint for uploading blogs
 export async function POST(request) {
     try {

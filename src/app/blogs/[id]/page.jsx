@@ -5,19 +5,26 @@ import Image from 'next/image';
 import Footer from '@/app/components/Footer';
 import Link from 'next/link';
 import { assets, blog_data } from '@/assets/assets';
+import axios from 'axios';
 
 const Page = ({ params }) => {
   const resolvedParams = use(params);
   const [data, setData] = useState(null);
 
-  const fetchBlogData = () => {
-    for (let i = 0; i < blog_data.length; i++) {
-      if (blog_data[i].id === Number(resolvedParams.id)) {
-        setData(blog_data[i]);
-        break;
+  const fetchBlogData = async () => {
+    try {
+      const res = await axios.get(`/api/blog?id=${resolvedParams.id}`);
+      const data = res.data;
+      if (data.success) {
+        setData(data.blog);
+      } else {
+        // console.error('Failed to fetch blog data:', data.message);
+        throw new Error(data.message || 'Failed to fetch blog');
       }
+    } catch (error) {
+      console.error('Error fetching blog data:', error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchBlogData();
@@ -36,7 +43,7 @@ const Page = ({ params }) => {
         </div>
         <div className="text-center my-24">
           <h1 className="text-2xl sm:text-5xl font-semibold max-w-[700px] mx-auto">{data.title}</h1>
-          <Image src={data.author_img} alt="author-img" width={60} height={60} className="mx-auto mt-6 border border-white rounded-full" />
+          <Image src={data.authorImg} alt="author-img" width={60} height={60} className="mx-auto mt-6 border border-white rounded-full" />
           <p className="mt-1 pb-2 text-lg max-w-[740px] mx-auto">{data.author}</p>
         </div>
       </div>
