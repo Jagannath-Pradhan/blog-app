@@ -2,6 +2,7 @@ import connectDB from "@/lib/config/db"
 import { NextResponse } from "next/server"
 import { writeFile } from "fs/promises"
 import Blog from "@/lib/models/blog"
+import fs from "fs"
 
 const loadDB = async () => {
     await connectDB()
@@ -76,6 +77,49 @@ export async function POST(request) {
         )
     } catch (error) {
         console.error("Error while creating blog:", error)
+        return NextResponse.json(
+            { success: false, message: "Internal Server Error", error: error.message },
+            { status: 500 }
+        )
+    }
+}
+
+
+// api endpoint for deleting a blog
+// export async function DELETE(request) {
+//     const blogId = request.nextUrl.searchParams.get('id')
+//     if (!blogId) {
+//         return NextResponse.json({ success: false, message: "Blog ID is required" }, { status: 400 })
+//     }
+//     try {
+//         const deletedBlog = await Blog.findByIdAndDelete(blogId)
+//         if (!deletedBlog) {
+//             return NextResponse.json({ success: false, message: "Blog not found" }, { status: 404 })
+//         }
+//         return NextResponse.json({ success: true, message: "Blog deleted successfully" }, { status: 200 })
+//     } catch (error) {
+//         console.error("Error while deleting blog:", error)
+//         return NextResponse.json(
+//             { success: false, message: "Internal Server Error", error: error.message },
+//             { status: 500 }
+//         )
+//     }
+// }
+
+
+export async function DELETE(request) {
+    const id = await request.nextUrl.searchParams.get('id');
+    if (!id) {
+        return NextResponse.json({ success: false, message: "Blog ID is required" }, { status: 400 })
+    }
+    try {
+        const blog = await Blog.findById(id)
+        fs.unlink(`./public/${blog.image}`, () => { })
+        await Blog.findByIdAndDelete(id)
+        return NextResponse.json({ success: true, message: "Blog deleted successfully" }, { status: 200 })
+    }
+    catch (error) {
+        console.error("Error while deleting blog:", error)
         return NextResponse.json(
             { success: false, message: "Internal Server Error", error: error.message },
             { status: 500 }

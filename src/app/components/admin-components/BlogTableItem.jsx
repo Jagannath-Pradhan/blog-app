@@ -2,7 +2,7 @@ import { assets } from '@/assets/assets'
 import Image from 'next/image'
 import React from 'react'
 
-const BlogTableItem = ({ authorImg, title, author, date }) => {
+const BlogTableItem = ({ authorImg, title, author, date, deleteBlog, mongoId }) => {
     const blogDate = new Date(date);
     date = blogDate.toLocaleDateString('en-US', {
         year: 'numeric',
@@ -23,7 +23,7 @@ const BlogTableItem = ({ authorImg, title, author, date }) => {
                 {date ? date : 'No date'}
             </td>
             <td className="px-6 py-4">
-                <span className="cursor-pointer">X</span>
+                <span className="text-red-600 cursor-pointer" onClick={() => deleteBlog(mongoId)}>X</span>
             </td>
         </tr>
     )

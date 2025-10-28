@@ -12,7 +12,7 @@ const BlogItem = ({ image, category, title, description, id }) => {
         <p className='ml-5 mt-5 px-1 inline-block bg-black text-white text-sm'>{category}</p>
         <div className='p-5'>
             <h5 className='mb-2 font-medium text-lg tracking-tight text-gray-900'>{title}</h5>
-            <p className='mb-3 text-sm tracking-tight text-gray-700'>{description}</p>
+            <p className='mb-3 text-sm tracking-tight text-gray-700' dangerouslySetInnerHTML={{__html:description.slice(0,120)}}></p>
             <Link href={`/blogs/${id}`} className='inline-flex items-center py-2 text-center font-semibold'>
                 Read More <Image src={assets.arrow} alt='arrow-icon' width={12} className='ml-2' />
             </Link>
